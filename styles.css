@@ -1,0 +1,30 @@
+   .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+        }
+
+        /* Clase para ocultar elementos (usada en lógica JS) */
+        .hidden-custom {
+            display: none;
+        }
+
+        /* Estilos para el estado activo de botones */
+        .size-btn.active {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .color-btn.active {
+            ring-width: 2px;
+            ring-color: #2563eb;
+            ring-offset-width: 2px;
+        }
+
+        .thumbnail.active {
+            ring-width: 2px;
+            ring-color: #2563eb; /* blue-600 */
+        }
