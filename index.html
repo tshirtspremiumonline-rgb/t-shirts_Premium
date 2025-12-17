@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirts - Inicio</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- EmailJS SDK (YA HABILITADO) -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Animación suave para los botones flotantes */
+        .floating-btn {
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* Estilos para el selector de color */
+        .color-btn {
+            transition: all 0.2s;
+            position: relative;
+        }
+        /* Clase para el estado seleccionado (color) */
+        .color-btn.selected {
+            ring-width: 2px;
+            ring-offset-width: 2px;
+            ring-color: #94a3b8; /* slate-400 */
+        }
+
+        /* Estilos para el selector de talla */
+        .size-btn {
+            transition: all 0.2s;
+        }
+        /* Clase para el estado seleccionado (talla) */
+        .size-btn.selected {
+            background-color: #0f172a; /* slate-900 */
+            color: white;
+            border-color: #0f172a;
+        }
+
+        /* Estilos para el Modal del Carrito */
+        #cart-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #cart-panel {
+            transition: transform 0.3s ease-in-out;
+        }
+        .cart-open #cart-overlay {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .cart-open #cart-panel {
+            transform: translateX(0);
+        }
+        .cart-closed #cart-overlay {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .cart-closed #cart-panel {
+            transform: translateX(100%);
+        }
+
+        /* Clases para ocultar/mostrar vistas */
+        .view-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .view-section.active {
+            display: block;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 cart-closed" id="body-container">
+
+    <!-- 1. HEADER / NAVEGACIÓN -->
+    <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex items-center cursor-pointer" onclick="showHome()">
+                    <button class="p-2 -ml-2 mr-2 md:hidden text-slate-500 hover:text-slate-900">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <a href="#" class="text-2xl font-serif font-bold tracking-tight text-slate-900">
+                        T-SHIRTS<span class="text-blue-600">.</span>
+                    </a>
+                </div>
+
+                <!-- Navegación Desktop -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#" onclick="showHome()" class="text-sm font-medium text-slate-900 border-b-2 border-blue-600">Inicio</a>
+                    <a href="#coleccion" onclick="showHome()" class="text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Nueva Colección</a>
+                    <a href="#ofertas" onclick="showHome()" class="text-sm font-medium text-red-600 hover:text-red-700 transition-colors">Ofertas</a>
+                </div>
+
+                <!-- Iconos Header -->
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
+                        <i data-lucide="search" class="w-5 h-5"></i>
+                    </button>
+                    <button class="p-2 text-slate-400 hover:text-blue-600 transition-colors" onclick="toggleCart()">
+                        <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ========================================= -->
+    <!-- VISTA 1: HOME (TIENDA)                    -->
+    <!-- ========================================= -->
+    <div id="view-home" class="view-section active">
+        
+        <!-- 2. HERO SECTION -->
+        <header class="relative bg-slate-900 text-white overflow-hidden">
+            <div class="absolute inset-0">
+                <div class="absolute inset-0 bg-gradient-to-r from-slate-900 to-slate-900/40 z-10"></div>
+                <div class="w-full h-full bg-slate-800 flex items-center justify-center opacity-50">
+                    <i data-lucide="shirt" class="w-64 h-64 text-slate-700 opacity-20"></i>
+                </div>
+            </div>
+
+            <div class="relative z-20 max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8 flex flex-col justify-center min-h-[500px]">
+                <span class="inline-block py-1 px-3 rounded-full bg-red-600 text-white text-xs font-bold tracking-wider uppercase mb-4 w-max">
+                    Oferta Limitada
+                </span>
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight mb-4">
+                    Renueva tu Estilo <br>
+                    <span class="text-blue-400">Hasta 50% OFF</span>
+                </h1>
+                <p class="mt-4 text-xl text-slate-300 max-w-lg">
+                    Descubre nuestra colección premium de algodón egipcio y lino. Elegancia y comodidad para cada ocasión.
+                </p>
+                <div class="mt-8 flex gap-4">
+                    <a href="#coleccion" class="px-8 py-3 bg-white text-slate-900 font-bold rounded-md hover:bg-slate-100 transition shadow-lg">
+                        Ver Ofertas
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- 3. LISTA DE PRODUCTOS (Camisas) -->
+        <main id="coleccion" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900">Nuestras Camisas</h2>
+                    <p class="mt-2 text-slate-500">Calidad superior en cada costura.</p>
+                </div>
+                <!-- Filtros simples -->
+                <div class="hidden sm:flex space-x-2">
+                    <button class="px-4 py-2 text-sm font-medium bg-slate-900 text-white rounded-full">Todas</button>
+                    <button class="px-4 py-2 text-sm font-medium bg-slate-100 text-slate-600 rounded-full hover:bg-slate-200">Formal</button>
+                    <button class="px-4 py-2 text-sm font-medium bg-slate-100 text-slate-600 rounded-full hover:bg-slate-200">Casual</button>
+                </div>
+            </div>
+
+            <!-- Grid container -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-10 gap-x-8">
+                
+                <!-- PRODUCTO 1: Oxford Executive White -->
+                <div class="group relative bg-white border border-slate-100 rounded-xl overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col product-card" data-id="1" data-name="Oxford Executive White" data-price="59.90">
+                    <!-- Contenedor Imagen (usa aspect-[3/4]) -->
+                    <div class="w-full aspect-[3/4] bg-slate-200 relative overflow-hidden bg-slate-100">
+                        
+                        <!-- Imagen Predeterminada -->
+                        <img 
+                            src="camisablanca1.png"
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';" 
+                            alt="Camisa Frontal" 
+                            class="img-front absolute inset-0 w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-0"
+                        >
+                        
+                        <!-- Imagen al Hover -->
+                        <img 
+                            src="camisablanca2.png" 
+                            onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1581655353564-df123a1eb820?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';"
+                            alt="Camisa Detalle" 
+                            class="img-back absolute inset-0 w-full h-full object-cover transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                        >
+                        
+                        <div class="absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded z-10">Nuevo</div>
+                    </div>
+
+                    <!-- Detalles -->
+                    <div class="p-5 flex flex-col flex-grow">
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">100% Algodón Egipcio</p>
+                        <h3 class="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
+                            <a href="#">Oxford Executive White</a>
+                        </h3>
+
+                        <!-- Calificación -->
+                        <div class="flex items-center mt-2 mb-3">
+                            <div class="flex text-amber-400 text-xs">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <span class="ml-2 text-xs text-slate-400">(45)</span>
+                        </div>
+
+                        <!-- Precio y Color -->
+                        <div class="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                            <span class="text-xl font-bold text-slate-900">$59.90</span>
+                            <div class="flex space-x-2">
+                                <button onclick="selectColor(this)" class="color-btn w-6 h-6 rounded-full bg-white border border-slate-300 ring-2 ring-slate-400 ring-offset-1 focus:outline-none selected" title="Blanco"></button>
+                                <button onclick="selectColor(this)" class="color-btn w-6 h-6 rounded-full bg-slate-900 border border-slate-300 hover:ring-2 hover:ring-slate-300 hover:ring-offset-1 transition" title="Negro"></button>
+                                <button onclick="selectColor(this)" class="color-btn w-6 h-6 rounded-full bg-[#E5D0B1] border border-slate-300 hover:ring-2 hover:ring-slate-300 hover:ring-offset-1 transition" title="Arena"></button>
+                            </div>
+                        </div>
+
+                        <!-- Selector de Tallas -->
+                        <div class="mt-4">
+                            <span class="text-xs font-medium text-slate-500 mb-2 block">Seleccionar Talla:</span>
+                            <div class="flex space-x-2">
+                                <button onclick="selectSize(this)" class="size-btn w-8 h-8 rounded border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-800 hover:text-slate-900 flex items-center justify-center selected" data-size="S">S</button>
+                                <button onclick="selectSize(this)" class="size-btn w-8 h-8 rounded border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-800 hover:text-slate-900 flex items-center justify-center" data-size="M">M</button>
+                                <button onclick="selectSize(this)" class="size-btn w-8 h-8 rounded border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-800 hover:text-slate-900 flex items-center justify-center" data-size="L">L</button>
+                                <button onclick="selectSize(this)" class="size-btn w-8 h-8 rounded border border-slate-200 text-xs font-bold text-slate-600 hover:border-slate-800 hover:text-slate-900 flex items-center justify-center" data-size="XL">XL</button>
+                            </div>
+                        </div>
+
+                        <!-- Botón Añadir -->
+                        <button onclick="addToCart(this)" class="mt-6 w-full bg-slate-900 text-white py-2.5 rounded-md font-medium hover:bg-slate-800 transition-colors flex items-center justify-center gap-2">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i> Añadir al Carrito
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- VISTA 2: FORMULARIO CHECKOUT (OCULTO)     -->
+    <!-- ========================================= -->
+    <div id="view-checkout" class="view-section max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <button onclick="showHome()" class="mb-8 flex items-center text-slate-500 hover:text-slate-900 transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5 mr-2"></i> Volver a la tienda
+        </button>
+
+        <h1 class="text-3xl font-serif font-bold text-slate-900 mb-8">Finalizar Compra</h1>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+            <!-- COLUMNA IZQUIERDA: DATOS -->
+            <section class="lg:col-span-7">
+                <form id="checkout-form" onsubmit="processCheckout(event)" class="space-y-6">
+                    <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                        <div>
+                            <label for="first-name" class="block text-sm font-medium text-slate-700">Nombre</label>
+                            <div class="mt-1">
+                                <input type="text" id="first-name" name="first-name" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="last-name" class="block text-sm font-medium text-slate-700">Apellido</label>
+                            <div class="mt-1">
+                                <input type="text" id="last-name" name="last-name" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="email" class="block text-sm font-medium text-slate-700">Correo Electrónico</label>
+                            <div class="mt-1">
+                                <input type="email" id="email" name="email" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border">
+                            </div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label for="phone" class="block text-sm font-medium text-slate-700">Número de Contacto</label>
+                            <div class="mt-1">
+                                <input type="tel" id="phone" name="phone" required class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-3 border">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-6">
+                        <div class="flex items-center">
+                            <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <label for="terms" class="ml-2 block text-sm text-slate-600">
+                                He leído y acepto los <a href="#" class="text-blue-600 hover:underline">Términos y Condiciones</a> y la Política de Privacidad.
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button type="submit" id="btn-confirm-order" class="w-full bg-slate-900 border border-transparent rounded-md shadow-sm py-4 px-4 text-lg font-medium text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-all">
+                            Confirmar Pedido
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- COLUMNA DERECHA: RESUMEN -->
+            <section class="lg:col-span-5 mt-10 lg:mt-0">
+                <div class="bg-slate-50 rounded-lg border border-slate-200 p-6 shadow-sm">
+                    <h2 class="text-lg font-medium text-slate-900 mb-4">Resumen del Pedido</h2>
+                    <div id="checkout-items-list" class="flow-root mb-6">
+                        <!-- Items inyectados por JS -->
+                    </div>
+                    <div class="border-t border-slate-200 pt-4 flex items-center justify-between">
+                        <dt class="text-base font-medium text-slate-900">Total a Pagar</dt>
+                        <dd class="text-xl font-bold text-slate-900" id="checkout-total-price">$0.00</dd>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- VISTA 3: CONFIRMACIÓN (ÉXITO)             -->
+    <!-- ========================================= -->
+    <div id="view-success" class="view-section max-w-2xl mx-auto px-4 py-24 text-center">
+        <div class="mb-6 flex justify-center">
+            <div class="h-24 w-24 bg-green-100 rounded-full flex items-center justify-center">
+                <i data-lucide="check" class="w-12 h-12 text-green-600"></i>
+            </div>
+        </div>
+        <h2 class="text-3xl font-bold text-slate-900 mb-4">¡Pedido Confirmado!</h2>
+        <p class="text-lg text-slate-600 mb-8">
+            Gracias por tu compra. Hemos enviado los detalles a tu correo electrónico.
+        </p>
+        
+        <div class="bg-slate-50 border border-slate-200 rounded-lg p-6 mb-8 max-w-sm mx-auto">
+            <p class="text-sm text-slate-500 uppercase tracking-wide font-semibold">Tu Número de Orden</p>
+            <p class="text-4xl font-mono font-bold text-slate-900 mt-2 tracking-widest" id="order-id-display">#000000</p>
+        </div>
+
+        <div class="prose prose-slate mx-auto text-left bg-blue-50 p-6 rounded-lg border border-blue-100 mb-8">
+            <h4 class="text-blue-900 font-bold mb-2 flex items-center"><i data-lucide="info" class="w-4 h-4 mr-2"></i> Próximos Pasos</h4>
+            <p class="text-blue-800 text-sm mb-0">
+                Por motivos de seguridad, para finalizar el pago y coordinar la entrega, por favor envía tu número de orden a nuestro asesor por WhatsApp.
+            </p>
+        </div>
+
+        <a id="whatsapp-link" href="#" target="_blank" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-white bg-[#25D366] hover:bg-[#20bd5a] md:text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1">
+            <svg class="w-6 h-6 mr-2 fill-current" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+            Finalizar Pedido en WhatsApp
+        </a>
+        <button onclick="showHome()" class="block w-full mt-4 text-slate-500 hover:text-slate-800 text-sm">Volver al inicio</button>
+    </div>
+
+    <!-- 4. FOOTER SIMPLE -->
+    <footer class="bg-slate-900 text-white py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-400 text-sm">&copy; 2024 T-Shirts Company. Expertos en camisería.</p>
+        </div>
+    </footer>
+
+    <!-- 5. BOTONES FLOTANTES (Solo visibles en Home) -->
+    <div id="floating-buttons" class="fixed bottom-6 right-6 flex flex-col items-end space-y-4 z-50">
+        <!-- Botón Carrito Flotante -->
+        <button onclick="toggleCart()" class="floating-btn group relative flex items-center justify-center w-14 h-14 bg-white text-slate-900 rounded-full shadow-xl border border-slate-100 hover:text-blue-600">
+            <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+            <span id="float-cart-count" class="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white opacity-0 transition-opacity">0</span>
+        </button>
+        <!-- Botón WhatsApp -->
+        <a href="https://wa.me/1234567890" target="_blank" class="floating-btn group relative flex items-center justify-center w-14 h-14 bg-[#25D366] text-white rounded-full shadow-xl hover:bg-[#20bd5a]">
+            <svg class="w-8 h-8 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+        </a>
+    </div>
+
+    <!-- 6. PANEL CARRITO DESLIZANTE -->
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 opacity-0 pointer-events-none" onclick="toggleCart()"></div>
+    
+    <div id="cart-panel" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+            <h2 class="text-xl font-bold text-slate-900">Carrito de Compras</h2>
+            <button onclick="toggleCart()" class="p-2 text-slate-400 hover:text-slate-600 transition-colors rounded-full hover:bg-slate-100">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 space-y-6" id="cart-items-container">
+            <!-- Items inyectados -->
+        </div>
+
+        <div class="border-t border-slate-100 p-6 bg-slate-50">
+            <div class="flex justify-between text-base font-medium text-slate-900 mb-4">
+                <p>Subtotal</p>
+                <p id="cart-total">$0.00</p>
+            </div>
+            <p class="mt-0.5 text-sm text-slate-500 mb-6">Envío e impuestos calculados al finalizar.</p>
+            <button onclick="goToCheckout()" class="w-full bg-slate-900 border border-transparent rounded-md shadow-sm py-3 px-4 text-base font-medium text-white hover:bg-slate-800 focus:outline-none flex justify-center items-center">
+                Ir a Pagar
+            </button>
+        </div>
+    </div>
+
+    <!-- Script Lógica -->
+    <script>
+        lucide.createIcons();
+
+        // ----------------------------------------------------
+        // 1. CONFIGURACIÓN EMAILJS
+        // ----------------------------------------------------
+        (function() {
+            // ¡IMPORTANTE! Reemplaza esto con tu Public Key si cambias de contraseña
+            emailjs.init("yUk_xI4-qouRssBb2"); 
+        })();
+
+        // Estado Global
+        let cart = JSON.parse(localStorage.getItem('myTshirtCart')) || [];
+        const floatCartBadge = document.getElementById('float-cart-count');
+        
+        // Inicializar
+        updateCartBadge();
+        renderCartItems();
+
+        // --- NAVEGACIÓN Y VISTAS ---
+        function showHome() {
+            document.getElementById('view-home').classList.add('active');
+            document.getElementById('view-checkout').classList.remove('active');
+            document.getElementById('view-success').classList.remove('active');
+            document.getElementById('floating-buttons').style.display = 'flex';
+            window.scrollTo(0,0);
+        }
+
+        function goToCheckout() {
+            if (cart.length === 0) {
+                alert("Tu carrito está vacío.");
+                return;
+            }
+            // Cerrar panel carrito
+            toggleCart();
+            // Cambiar vista
+            document.getElementById('view-home').classList.remove('active');
+            document.getElementById('view-success').classList.remove('active');
+            document.getElementById('view-checkout').classList.add('active');
+            document.getElementById('floating-buttons').style.display = 'none'; // Ocultar flotantes en checkout
+            
+            renderCheckoutSummary();
+            window.scrollTo(0,0);
+        }
+
+        function showSuccess(orderId) {
+            document.getElementById('view-checkout').classList.remove('active');
+            document.getElementById('view-success').classList.add('active');
+            document.getElementById('order-id-display').innerText = `#${orderId}`;
+            
+            // Configurar botón WhatsApp
+            const message = `Hola, acabo de realizar el pedido #${orderId} en la tienda. Quisiera coordinar el pago y la entrega.`;
+            const phone = "3163181814"; // TU NÚMERO DE WHATSAPP AQUÍ
+            document.getElementById('whatsapp-link').href = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            
+            // Limpiar carrito
+            cart = [];
+            saveCart();
+            renderCartItems();
+            window.scrollTo(0,0);
+        }
+
+        // --- RENDERIZADO CHECKOUT ---
+        function renderCheckoutSummary() {
+            const container = document.getElementById('checkout-items-list');
+            const totalEl = document.getElementById('checkout-total-price');
+            
+            let total = 0;
+            
+            container.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.quantity;
+                total += itemTotal;
+                return `
+                <div class="flex py-4 border-b border-gray-100 last:border-0">
+                    <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                        <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                    </div>
+                    <div class="ml-4 flex flex-1 flex-col">
+                        <div>
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                                <h3 class="text-sm">${item.name}</h3>
+                                <p class="ml-4 text-sm">$${itemTotal.toFixed(2)}</p>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">${item.color} | ${item.size}</p>
+                            <p class="mt-1 text-xs text-gray-400">Cant: ${item.quantity} x $${item.price}</p>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            totalEl.innerText = `$${total.toFixed(2)}`;
+        }
+
+        // --- PROCESO DE CHECKOUT Y EMAILJS ---
+        function processCheckout(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btn-confirm-order');
+            const originalText = btn.innerText;
+            
+            // 1. Simular carga
+            btn.disabled = true;
+            btn.innerText = "Procesando pedido...";
+            btn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            // 2. Generar ID Random (6 dígitos)
+            const orderId = Math.floor(100000 + Math.random() * 900000);
+
+            // 3. Preparar los datos del formulario y el carrito
+            // EmailJS no lee Arrays complejos, así que convertimos el carrito a texto plano HTML o String
+            const cartDescription = cart.map(item => 
+                `- ${item.name} (Talla: ${item.size}, Color: ${item.color}) x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
+            ).join('\n');
+
+            const serviceID = "service_rjdzml9";   // <--- PON TU SERVICE ID DE EMAILJS
+            const templateID = "template_q923dbq"; // <--- PON TU TEMPLATE ID DE EMAILJS
+
+            // Estos nombres (customer_name, order_id, etc) deben coincidir con tu Template en EmailJS
+            const templateParams = {
+                customer_name: document.getElementById('first-name').value + ' ' + document.getElementById('last-name').value,
+                customer_email: document.getElementById('email').value,
+                customer_phone: document.getElementById('phone').value,
+                order_id: orderId,
+                cart_details: cartDescription,
+                total_price: document.getElementById('checkout-total-price').innerText
+            };
+
+            // 4. ENVIAR CORREO CON EMAILJS
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    
+                    // Si todo sale bien, mostramos la vista de éxito
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                    showSuccess(orderId);
+                    
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    alert("Hubo un error al enviar el pedido. Por favor intenta de nuevo.");
+                    
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                    btn.classList.remove('opacity-75', 'cursor-not-allowed');
+                });
+        }
+
+        // --- FUNCIONES DEL CARRITO (EXISTENTES) ---
+        function toggleCart() {
+            const body = document.getElementById('body-container');
+            const isOpen = body.classList.contains('cart-open');
+            
+            if (isOpen) {
+                body.classList.remove('cart-open');
+                body.classList.add('cart-closed');
+            } else {
+                body.classList.remove('cart-closed');
+                body.classList.add('cart-open');
+            }
+        }
+
+        function addToCart(btnElement) {
+            // Buscar el contenedor padre del producto
+            const card = btnElement.closest('.product-card');
+            const id = card.dataset.id;
+            const name = card.dataset.name;
+            const price = parseFloat(card.dataset.price);
+            const image = card.querySelector('.img-front').src;
+            
+            // Buscar opciones seleccionadas
+            const colorBtn = card.querySelector('.color-btn.selected');
+            const sizeBtn = card.querySelector('.size-btn.selected');
+            
+            const color = colorBtn ? colorBtn.title : 'Estándar';
+            const size = sizeBtn ? sizeBtn.dataset.size : 'M';
+            
+            // Crear ID único para variante
+            const uniqueId = `${id}-${color}-${size}`;
+            
+            // Verificar si ya existe
+            const existingItem = cart.find(item => item.uniqueId === uniqueId);
+            
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    uniqueId,
+                    id,
+                    name,
+                    price,
+                    image,
+                    color,
+                    size,
+                    quantity: 1
+                });
+            }
+            
+            saveCart();
+            updateCartBadge();
+            renderCartItems();
+            
+            // Abrir carrito para confirmar
+            if(document.body.classList.contains('cart-closed')){
+                toggleCart();
+            }
+        }
+
+        function removeFromCart(uniqueId) {
+            cart = cart.filter(item => item.uniqueId !== uniqueId);
+            saveCart();
+            updateCartBadge();
+            renderCartItems();
+            // Re-renderizar checkout si está visible
+            if(document.getElementById('view-checkout').classList.contains('active')) {
+                renderCheckoutSummary();
+            }
+        }
+
+        function updateQuantity(uniqueId, change) {
+            const item = cart.find(item => item.uniqueId === uniqueId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity < 1) {
+                    removeFromCart(uniqueId);
+                    return;
+                }
+            }
+            saveCart();
+            updateCartBadge();
+            renderCartItems();
+            // Re-renderizar checkout si está visible
+            if(document.getElementById('view-checkout').classList.contains('active')) {
+                renderCheckoutSummary();
+            }
+        }
+
+        function saveCart() {
+            localStorage.setItem('myTshirtCart', JSON.stringify(cart));
+        }
+
+        function updateCartBadge() {
+            const count = cart.reduce((acc, item) => acc + item.quantity, 0);
+            floatCartBadge.innerText = count;
+            floatCartBadge.style.opacity = count > 0 ? '1' : '0';
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cart-items-container');
+            const totalEl = document.getElementById('cart-total');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64 text-slate-400">
+                        <i data-lucide="shopping-cart" class="w-12 h-12 mb-4 opacity-50"></i>
+                        <p>Tu carrito está vacío</p>
+                    </div>
+                `;
+                totalEl.innerText = "$0.00";
+                return;
+            }
+
+            let total = 0;
+            
+            container.innerHTML = cart.map(item => {
+                total += item.price * item.quantity;
+                return `
+                <div class="flex py-6">
+                    <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                        <img src="${item.image}" alt="${item.name}" class="h-full w-full object-cover object-center">
+                    </div>
+
+                    <div class="ml-4 flex flex-1 flex-col">
+                        <div>
+                            <div class="flex justify-between text-base font-medium text-slate-900">
+                                <h3><a href="#">${item.name}</a></h3>
+                                <p class="ml-4">$${(item.price * item.quantity).toFixed(2)}</p>
+                            </div>
+                            <p class="mt-1 text-sm text-slate-500">${item.color} | ${item.size}</p>
+                        </div>
+                        <div class="flex flex-1 items-end justify-between text-sm">
+                            <div class="flex items-center border border-gray-300 rounded">
+                                <button onclick="updateQuantity('${item.uniqueId}', -1)" class="px-2 py-1 text-gray-600 hover:bg-gray-100">-</button>
+                                <span class="px-2 text-gray-900">${item.quantity}</span>
+                                <button onclick="updateQuantity('${item.uniqueId}', 1)" class="px-2 py-1 text-gray-600 hover:bg-gray-100">+</button>
+                            </div>
+
+                            <button type="button" onclick="removeFromCart('${item.uniqueId}')" class="font-medium text-red-600 hover:text-red-500">Eliminar</button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            
+            totalEl.innerText = `$${total.toFixed(2)}`;
+            lucide.createIcons();
+        }
+
+       
+
+         function selectColor(btn) {
+            const parent = btn.closest('.group');
+            const siblings = parent.querySelectorAll('.color-btn');
+            siblings.forEach(s => {
+                s.classList.remove('selected');
+                s.classList.remove('ring-2', 'ring-slate-400', 'ring-offset-1'); 
+            });
+            btn.classList.add('selected');
+
+            const colorName = btn.getAttribute('title');
+            const imgFront = parent.querySelector('.img-front');
+            const imgBack = parent.querySelector('.img-back');
+
+            const fallbackBlack1 = "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?auto=format&fit=crop&w=800&q=80";
+            const fallbackBlack2 = "https://images.unsplash.com/photo-1503341504253-dff4815485f1?auto=format&fit=crop&w=800&q=80";
+            const fallbackWhite1 = "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80";
+            const fallbackWhite2 = "https://images.unsplash.com/photo-1620799140408-ed5341cd2431?auto=format&fit=crop&w=800&q=80";
+
+            if (colorName === 'Negro') {
+                imgFront.src = 'camisanegra1.png';
+                imgFront.onerror = function() { this.src = fallbackBlack1; };
+                imgBack.src = 'camisanegra2.png';
+                imgBack.onerror = function() { this.src = fallbackBlack2; };
+            } else if (colorName === 'Blanco') {
+                imgFront.src = 'camisablanca1.png';
+                imgFront.onerror = function() { this.src = fallbackWhite1; };
+                imgBack.src = 'camisablanca2.png';
+                imgBack.onerror = function() { this.src = fallbackWhite2; };
+            } else if (colorName === 'Arena') {
+                imgFront.src = 'camisaarena1.png';
+                imgFront.onerror = function() { this.src = fallbackWhite1; };
+                imgBack.src = 'camisaarena2.png';
+                imgBack.onerror = function() { this.src = fallbackWhite2; };
+            }
+        }
+
+        function selectSize(btn) {
+            const parent = btn.parentElement;
+            const siblings = parent.querySelectorAll('.size-btn');
+            siblings.forEach(s => {
+                s.classList.remove('selected');
+                s.classList.remove('border-slate-800', 'text-slate-900');
+            });
+            btn.classList.add('selected');
+        }
+    </script>
+</body>
+</html>
